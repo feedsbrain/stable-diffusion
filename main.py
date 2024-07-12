@@ -1,3 +1,4 @@
+import os
 import torch
 import gradio as gr
 
@@ -15,22 +16,22 @@ def get_torch_device():
   return device
 
 # Load the pre-trained stable diffusion model
-model_path = "/Volumes/HOUSEBRAIN/Workspaces/research/stable-diffusion/models/dreamshaper_8.safetensors"
-
-pipe = StableDiffusionPipeline.from_single_file(model_path,torch_dtype=torch.float16,use_safetensors=True)
+pipe = StableDiffusionPipeline.from_pretrained("Lykon/dreamshaper-8")
 pipe = pipe.to(get_torch_device())
 
-# gr.Interface.from_pipeline(pipe).launch()
+if (os.environ.get('USE_GRADIO', "False") == "True"):
+    # Serve Web UI
+    gr.Interface.from_pipeline(pipe).launch()
+else:
+    # Define the prompt
+    prompt = "A fantasy landscape with mountains and a river, sun behind the clouds"
 
-# Define the prompt
-prompt = "A fantasy landscape with mountains and a river"
+    # Generate the image
+    with torch.no_grad():
+        image = pipe(prompt).images[0]
 
-# Generate the image
-with torch.no_grad():
-    image = pipe(prompt).images[0]
+    # Save the generated image
+    image.save(f"images/{uuid4()}.png")
 
-# Save the generated image
-image.save(f"images/{uuid4()}.png")
-
-# Display the image (optional)
-image.show()
+    # Display the image (optional)
+    image.show()
