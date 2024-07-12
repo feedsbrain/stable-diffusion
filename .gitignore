@@ -1,0 +1,6 @@
+venv
+flagged
+images/*
+!images/.gitkeep
+models/*
+!models/.gitkeep
