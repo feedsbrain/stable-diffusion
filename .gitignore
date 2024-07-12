@@ -4,3 +4,4 @@ images/*
 !images/.gitkeep
 models/*
 !models/.gitkeep
+.DS_Store
